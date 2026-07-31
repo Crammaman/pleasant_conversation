@@ -1,0 +1,9 @@
+alice_queue:
+  profile: alice_profile
+  date: <%= Date.current %>
+  current: true
+
+bob_queue:
+  profile: bob_profile
+  date: <%= Date.current %>
+  current: true

@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:80"
+    environment:
+      # Optional override; by default the master key is mounted below.
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-}
+    volumes:
+      # Persist the SQLite databases across container restarts.
+      - sqlite_data:/rails/storage
+      # Provide the credentials master key without baking it into the image.
+      - ./config/master.key:/rails/config/master.key:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  sqlite_data:

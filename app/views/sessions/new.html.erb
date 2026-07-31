@@ -1,0 +1,31 @@
+<% content_for :title, "Log in" %>
+
+<div class="columns is-centered">
+  <div class="column is-4">
+    <div class="box">
+      <h1 class="title has-text-centered">Pleasant Conversation</h1>
+
+      <%= form_with url: login_path, method: :post do |f| %>
+        <div class="field">
+          <label class="label">Username</label>
+          <div class="control">
+            <%= f.text_field :username, class: "input", autofocus: true, autocomplete: "username" %>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Password</label>
+          <div class="control">
+            <%= f.password_field :password, class: "input", autocomplete: "current-password" %>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <%= f.submit "Log in", class: "button is-primary is-fullwidth" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

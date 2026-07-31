@@ -1,0 +1,17 @@
+class Conversation < ApplicationRecord
+  belongs_to :queue, class_name: "ProfileQueue", inverse_of: :conversations
+
+  has_many :answers, dependent: :destroy, inverse_of: :conversation
+
+  accepts_nested_attributes_for :answers
+
+  enum :state, { pending: "pending", in_progress: "in_progress", finished: "finished", deleted: "deleted" }
+
+  validates :name, presence: true
+
+  scope :active, -> { where(state: %w[pending in_progress]) }
+
+  def startable?
+    pending? && queue.conversations.in_progress.none?
+  end
+end

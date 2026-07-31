@@ -1,0 +1,38 @@
+<% content_for :title, "#{@profile.display_name} — Queue" %>
+
+<div class="level">
+  <div class="level-left">
+    <div class="level-item">
+      <div>
+        <h1 class="title"><%= @profile.display_name %> — Queue</h1>
+        <% if @queue.date %>
+          <p class="subtitle is-6 has-text-grey"><%= @queue.date.to_fs(:long) %></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="level-right">
+    <div class="level-item">
+      <%= link_to "Add Conversation", new_queue_conversation_path(@queue), class: "button is-primary" %>
+    </div>
+  </div>
+</div>
+
+<% if @conversations.any? %>
+  <%= render partial: "queues/conversation", collection: @conversations, as: :conversation,
+             locals: { queue_in_progress: @in_progress.present? } %>
+<% else %>
+  <div class="notification is-info is-light">
+    <p>No conversations in this queue yet.</p>
+    <%= link_to "Add a conversation", new_queue_conversation_path(@queue), class: "button is-primary mt-3" %>
+  </div>
+<% end %>
+
+<script>
+  // Toggle the expanded/collapsed state of a conversation card's content.
+  document.querySelectorAll(".conversation-content").forEach(function (el) {
+    el.addEventListener("click", function () {
+      el.classList.toggle("is-expanded");
+    });
+  });
+</script>

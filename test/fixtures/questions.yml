@@ -1,0 +1,34 @@
+feeling:
+  profile: alice_profile
+  question_type: text
+  text: How are you feeling today?
+  config: {}
+  position: 1
+
+topic:
+  profile: alice_profile
+  question_type: select
+  text: Preferred topic
+  config:
+    options:
+      - Family
+      - Work
+      - Hobbies
+  position: 2
+
+length:
+  profile: alice_profile
+  question_type: radio
+  text: Length of chat
+  config:
+    options:
+      - Short
+      - Long
+  position: 3
+
+bob_feeling:
+  profile: bob_profile
+  question_type: text
+  text: What did you do today?
+  config: {}
+  position: 1

@@ -1,0 +1,14 @@
+admin:
+  username: admin
+  name: Admin
+  password_digest: <%= BCrypt::Password.create("password123") %>
+
+alice:
+  username: alice
+  name: Alice Nguyen
+  password_digest: <%= BCrypt::Password.create("password123") %>
+
+bob:
+  username: bob
+  name: Bob Marsh
+  password_digest: <%= BCrypt::Password.create("password123") %>
