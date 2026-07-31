@@ -1,68 +1,41 @@
-# fly.toml — https://fly.io/docs/reference/configuration/
+# fly.toml app configuration file generated for pleasant-conversation on 2026-07-31T06:30:42Z
 #
-# Deploy:
-#   fly launch --no-deploy --copy-config   # or: fly apps create pleasant-conversation
-#   fly secrets set RAILS_MASTER_KEY="$(cat config/master.key)"
-#   fly volumes create sqlite_data --size 1 --region iad
-#   fly deploy
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
-# This app stores its data in SQLite on a persistent volume, so it must run on
-# exactly ONE machine — two machines would each get their own volume and their
-# own divergent database.
 
-app = "pleasant-conversation"
-primary_region = "iad"
+app = 'pleasant-conversation'
+primary_region = 'syd'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
+
+[deploy]
+  strategy = 'immediate'
 
 [env]
-  RAILS_ENV = "production"
-  # Thruster terminates the connection inside the machine; Fly's proxy handles
-  # TLS, so tell Rails to treat requests as HTTPS and redirect http://.
-  FORCE_SSL = "true"
-  RAILS_MAX_THREADS = "5"
-  # Log to stdout so `fly logs` shows them.
-  RAILS_LOG_TO_STDOUT = "true"
+  FORCE_SSL = 'true'
+  RAILS_ENV = 'production'
+  RAILS_LOG_TO_STDOUT = 'true'
+  RAILS_MAX_THREADS = '5'
 
-# The SQLite databases live here (see config/database.yml). Must match the
-# volume name used with `fly volumes create`.
 [[mounts]]
-  source = "sqlite_data"
-  destination = "/rails/storage"
+  source = 'sqlite_data'
+  destination = '/rails/storage'
 
 [http_service]
-  # Thruster listens on 80 inside the container (see Dockerfile CMD).
   internal_port = 80
   force_https = true
-  # "stop" rather than "suspend": suspend isn't available for machines with an
-  # attached volume.
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
   [http_service.concurrency]
-    type = "requests"
+    type = 'requests'
     hard_limit = 250
     soft_limit = 200
 
-  [[http_service.http_checks]]
-    path = "/up"
-    interval = "30s"
-    timeout = "5s"
-    grace_period = "20s"
-
-# Single machine only — see the note at the top of this file.
-[deploy]
-  strategy = "immediate"
-  # No release_command: release machines don't mount the volume, so migrations
-  # there would run against a throwaway database. bin/docker-entrypoint runs
-  # `db:prepare` on boot instead, against the real volume.
-
 [[vm]]
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
-  memory = "1gb"
-
-# Small swap file gives the 1GB VM headroom during boot/asset serving.
-swap_size_mb = 512
+  memory_mb = 1024
