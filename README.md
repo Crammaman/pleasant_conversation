@@ -32,6 +32,46 @@ runs `db:prepare` (migrating and seeding on first boot). The credentials
 master key is mounted from `config/master.key`. Set `FORCE_SSL=true` when
 deploying behind a TLS-terminating proxy.
 
+## Connecting to the Fly.io deployment
+
+Deployment config lives in `fly.toml` (first-time setup steps are in its header
+comment). The app runs as a single machine in `syd` with the SQLite databases on
+a volume mounted at `/rails/storage`.
+
+Open a Rails console on the running machine:
+
+```sh
+fly ssh console --pty --user rails -C "/rails/bin/rails console"
+```
+
+Or get a shell, and run whatever from there:
+
+```sh
+fly ssh console --user rails      # --pty is implied when no -C is given
+cd /rails && bin/rails console
+```
+
+`--user rails` matters: `fly ssh console` connects as `root` by default, but the
+app runs as uid 1000 (see `USER 1000:1000` in the Dockerfile). A root console
+that writes creates root-owned `production.sqlite3-wal`/`-shm` files next to the
+database, and Puma then fails with `attempt to write a readonly database` once
+the console exits.
+
+Use `fly ssh console` (exec into the running machine), *not* `fly console` — the
+latter starts a fresh ephemeral machine with no volume attached, so it would show
+an empty database and discard anything written.
+
+Status and logs:
+
+```sh
+fly status
+fly logs
+```
+
+The machine auto-stops when idle (`min_machines_running = 0`), so SSH will fail
+to connect while it's stopped. Wake it with `fly machine start <machine-id>`, or
+just load the app URL.
+
 ## Tests
 
 ```sh

@@ -42,6 +42,9 @@
 # Ignore development files
 /.devcontainer
 
+# Ignore JetBrains IDE project files (RubyMine).
+/.idea/
+
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
